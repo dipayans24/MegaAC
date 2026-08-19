@@ -8,3 +8,4 @@ google-oauth2-tool
 gspread-dataframe
 oauth2client
 xlsxwriter
+openpyxl
