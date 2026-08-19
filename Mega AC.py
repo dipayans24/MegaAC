@@ -585,7 +585,7 @@ else:
     with st.status("Paste this code in Metabase", expanded=True):
         FunnelsList = ["AI for Techies Checkout", "BE10X Checkout", "Office Master Checkout"]
         FunnelCheckBox = st.selectbox("Select a Funnel to get code", FunnelsList)
-        st.code(generate_code(FunnelCheckBox, WSDate), language="sql")
+        st.code(generate_code(FunnelCheckBox, WSDate), language="sql", line_numbers  = True)
 
     
 
