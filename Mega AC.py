@@ -577,7 +577,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
                 st.success("Upload Completed!")
 
 else:
-    with st.status("Credentials", expanded=False):
+    with st.status("Links", expanded=False):
         st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/")
         st.code("FgbBpmOfK68FBt")
         
