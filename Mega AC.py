@@ -400,7 +400,7 @@ WSDate =  str(st.date_input("Select the Next Sunday date",value=next_sunday()))
 credential_Upload = st.file_uploader("Upload Credentials File", type = ["json"]) 
 GdriveCredentials =  st.file_uploader("Upload GDrive File", type = ["json"]) 
 
-MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_files=True)
+MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_files=True, , type = ["csv"])
 
 clearPreviousData = st.checkbox("Clear Data?")
 
