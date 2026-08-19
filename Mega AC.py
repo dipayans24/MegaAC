@@ -582,7 +582,7 @@ else:
         FunnelCheckBox = st.selectbox("Select a Funnel to get code", FunnelsList)
         st.code(generate_code(FunnelCheckBox, WSDate), language="sql")
 
-    with st.status("Crendtials", expanded=False):
+    with st.status("Credentials", expanded=False):
         st.code("rezaul.alam@houseofedtech.in")
         st.code("FgbBpmOfK68FBt")
 
