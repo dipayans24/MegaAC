@@ -29,39 +29,43 @@ def generate_code(Funnel, WSDate):
 
     PreviousDate = (datetime.strptime(WSDate , "%Y-%m-%d") - timedelta(days=9)).strftime("%Y-%m-%d")
     if Funnel == "AI for Techies Checkout":
+        checkout = "techies checkout"
         Amount = "BETWEEN 100 AND 950"
     elif Funnel == "BE10X Checkout":
         Amount = "BETWEEN 10 AND 232"
+        checkout = "ai checkout"
     elif Funnel == "Office Master Checkout":
         Amount = "BETWEEN 100 AND 590"
+        checkout = "om checkout"
 
     code = f"""
         SELECT DISTINCT
-        convert(`Wp Wc Orders - Order`.`date_created_gmt`, datetime) AS `CreatedAt` , 
-        `Wp Wc Order Addresses - Order`.`first_name` AS `Customer Name`,
-        `Wp Wc Order Addresses - Order`.`email` AS `Email`,
-        `Wp Wc Order Addresses - Order`.`phone` AS `Phone Number`,
+            convert(`Wp Wc Orders - Order`.`date_created_gmt`, datetime) AS `CreatedAt`, 
+            `Wp Wc Order Addresses - Order`.`first_name` AS `Customer Name`,
+            `Wp Wc Order Addresses - Order`.`email` AS `Email`,
+            `Wp Wc Order Addresses - Order`.`phone` AS `Phone Number`,
             `Wp Wc Orders - Order`.`total_amount` AS `Amount`,
-        `wp_wc_orders_meta`.`meta_value` AS `Age Group`,
-            'techies checkout' as "Payment Slug",
-        `Wp Wc Orders - Order`.`status` AS `Status`, 
-        'techies checkout' as  "Payment Funnel", 
-        'Yes' as "Abandon Cart"
+            `wp_wc_orders_meta`.`meta_value` AS `Age Group`,
+            '{checkout}' as "Payment Slug",
+            `Wp Wc Orders - Order`.`status` AS `Status`, 
+            '{checkout}' as  "Payment Funnel", 
+            'Yes' as "Abandon Cart"
         FROM
         `wp_wc_orders_meta`
-        LEFT JOIN `wp_wc_order_addresses` AS `Wp Wc Order Addresses - Order` ON `wp_wc_orders_meta`.`order_id` = `Wp Wc Order Addresses - Order`.`order_id`
-        LEFT JOIN `wp_wc_orders` AS `Wp Wc Orders - Order` ON `wp_wc_orders_meta`.`order_id` = `Wp Wc Orders - Order`.`id`
+            LEFT JOIN `wp_wc_order_addresses` AS `Wp Wc Order Addresses - Order` 
+                ON `wp_wc_orders_meta`.`order_id` = `Wp Wc Order Addresses - Order`.`order_id`
+            LEFT JOIN `wp_wc_orders` AS `Wp Wc Orders - Order` 
+                ON `wp_wc_orders_meta`.`order_id` = `Wp Wc Orders - Order`.`id`
         WHERE
-        (`wp_wc_orders_meta`.`meta_key` = 'billing_age')
-        AND (
-            `Wp Wc Orders - Order`.`date_created_gmt`  >= '{PreviousDate}'  
-        /* between '2026-05-23' and '2026-05-30' */
-        )
-        AND `Wp Wc Orders - Order`.`total_amount` {Amount}
-        AND `Wp Wc Orders - Order`.`status` NOT IN ('wc-completed')
-        order by 'Amount' desc, 'CreatedAt' asc;
+            (`wp_wc_orders_meta`.`meta_key` = 'billing_age')
+            AND (
+                `Wp Wc Orders - Order`.`date_created_gmt`  >= '{PreviousDate}'  
+            /* between '2026-05-23' and '2026-05-30' */
+            )
+            AND `Wp Wc Orders - Order`.`total_amount` {Amount}
+            AND `Wp Wc Orders - Order`.`status` NOT IN ('wc-completed')
+        ORDER BY 'Amount' desc, 'CreatedAt' ASC;
         """
-
     return code
     
 def save_upload(fileupload, fileType = None):
@@ -576,6 +580,6 @@ else:
     with st.status("Paste this code in Metabase", expanded=True):
         FunnelsList = ["AI for Techies Checkout", "BE10X Checkout", "Office Master Checkout"]
         FunnelCheckBox = st.selectbox("Select a Funnel to get code", FunnelsList)
-        st.code(generate_code(FunnelCheckBox, WSDate))
+        st.code(generate_code(FunnelCheckBox, WSDate), language="sql")
 
 
