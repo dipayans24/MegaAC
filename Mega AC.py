@@ -578,7 +578,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
 
 else:
     with st.status("Credentials", expanded=False):
-        st.code("https://metabase-production-6ca8.up.railway.app/", language="html")
+        st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/")
         st.code("rezaul.alam@houseofedtech.in")
         st.code("FgbBpmOfK68FBt")
         
