@@ -114,11 +114,14 @@ def filter_student(ACOutput_FileName):
           AI_AC_sheet_name = [sheet for sheet in  f.sheet_names if sheet == "AI_AC"]
             
       for sheet in Non_AI_AC_sheet_name:
-        data = pd.read_excel(ACOutput_FileName, sheet_name=sheet)
-        DF = data[data["Profession"].fillna("Empty").str.lower().str.contains("student")]
-        data = data[~data["Profession"].fillna("Empty").str.lower().str.contains("student")]
-        NewACData[sheet] = data
-        studentDF = pd.concat([studentDF, DF], axis = "rows", ignore_index = True)
+            data = pd.read_excel(ACOutput_FileName, sheet_name=sheet)
+            st.write(f"{sheet} - {len(data)}")
+            DF = data[data["Profession"].fillna("Empty").str.lower().str.contains("student")]
+            st.write(f"{sheet} - {len(DF)}")
+            data = data[~data["Profession"].fillna("Empty").str.lower().str.contains("student")]
+            st.write(f"After seperating {sheet} - {len(data)}")
+            NewACData[sheet] = data
+            studentDF = pd.concat([studentDF, DF], axis = "rows", ignore_index = True)
     
       AI_AC = pd.read_excel(ACOutput_FileName, sheet_name = AI_AC_sheet_name[0])
       AI_AC = pd.concat([AI_AC, studentDF], axis = "rows", ignore_index = True)
