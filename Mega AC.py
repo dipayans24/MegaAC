@@ -288,12 +288,29 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
     MetaACData = pd.DataFrame()
 
     for file in MetaACDataFilePaths:
-        data = pd.read_csv(file, sep=",")
-        MetaACData = pd.concat([MetaACData, data], axis="rows")
+    data = pd.read_csv(file, sep=",", index_col=None)
 
-    # Timezone Correction
-    MetaACData["CreatedAt"] = MetaACData["CreatedAt"].astype('M8[s]')+pd.Timedelta(minutes=330)#.dt.strftime("%Y-%m-%d %H:%M:%S")
+    if "Payment Funnel" in data.columns:
+        data["CreatedAt"] = data["CreatedAt"].astype('M8[s]')+pd.Timedelta(minutes=330)
+    else:
+        data.rename(columns={"Customer Email": "Email", "Customer Phone":"Phone Number", "Total":"Amount", 
+                           "Product Slug" : "Payment Slug", "Initiated At":"CreatedAt"}, inplace=True)
+        
+        data = data.loc[(data["Amount"]  <= 950) & (data["Status"] != "Created"), :]
+        if "CreatedAt" not in data:
+            data["CreatedAt"] = None
 
+        data["CreatedAt"] = data["CreatedAt"].astype('M8[s]')
+        data["roundOff"] = data.Amount.round(0)
+        data["PaymentFunnel"] = data["roundOff"].astype(int).map(PaymentFunnel)
+        
+    MetaACData = pd.concat([MetaACData, data], axis="rows")
+
+MetaACData["PaymentFunnel"] = MetaACData[["Payment Funnel", "PaymentFunnel"]].apply(lambda x: x["Payment Funnel"] if pd.isna(x["PaymentFunnel"]) else x["PaymentFunnel"], axis= 1)
+
+columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel", "Profession"]
+
+MetaACData = MetaACData[columns]
     MetaACData = MetaACData.sort_values(by = ["CreatedAt"], ascending=True )
     MetaACData.rename(columns = {"Payment Funnel": "PaymentFunnel"}, inplace =True)
 
