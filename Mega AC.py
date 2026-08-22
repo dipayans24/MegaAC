@@ -576,23 +576,9 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             )
     #Unmatched_Slugs.to_excel(f, sheet_name="Unmatched_Slugs", index=False)
     
-        st.markdown("""
-        <style>
-        a[data-testid="stBaseButton-secondary"],
-        div[data-testid="stLinkButton"] a {
-            background-color: rgba(28, 131, 225, 0.1) !important;
-            color: rgb(28, 131, 225) !important;
-            border: 1px solid rgba(28, 131, 225, 0.2) !important;
-        }
-        a[data-testid="stBaseButton-secondary"]:hover,
-        div[data-testid="stLinkButton"] a:hover {
-            border-color: rgb(28, 131, 225) !important;
-            color: rgb(28, 131, 225) !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+ 
         
-        st.link_button(f"Go to Sheet- {sheet_id}", f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit?usp=sharing")
+        st.link_button(f"Go to Sheet- {sheet_id}", f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit?usp=sharing", type = "secondary")
 
     if "TotalFiles" in st.session_state:
         if "upload_done" not in st.session_state:
