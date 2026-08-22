@@ -115,17 +115,15 @@ def filter_student(ACOutput_FileName):
             
       for sheet in Non_AI_AC_sheet_name:
             data = pd.read_excel(ACOutput_FileName, sheet_name=sheet)
-            data["Profession"] = data["Profession"].fillna("Empty") 
-            st.write(f"After reading, {sheet} - {len(data)}")
+
             DF = data[data["Profession"].fillna("Empty").str.lower().str.contains("student")]
-            st.write(f"{sheet} - {len(DF)}")
+
             data = data[~data["Profession"].fillna("Empty").str.lower().str.contains("student")]
-            data["Profession"] = data["Profession"].str.replace("Empty","")
-            st.write(f"After seperating {sheet} - {len(data)}")
+
             NewACData[sheet] = data
             studentDF = pd.concat([studentDF, DF], axis = "rows", ignore_index = True)
           
-      st.write(pd.__version__)
+
     
       AI_AC = pd.read_excel(ACOutput_FileName, sheet_name = AI_AC_sheet_name[0])
       AI_AC = pd.concat([AI_AC, studentDF], axis = "rows", ignore_index = True)
@@ -447,13 +445,10 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
             for fg in FunnelGrouping:
                 sheet_name = f"{fg}_AC"
                 OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
-                #if sheet_name == "Python_AC":
-                #   OutputAC_DF = OutputAC_DF[OutputAC_DF['Age Group'] != "Under 21"]
                
                 OutputAC_DF.to_excel(f, sheet_name= sheet_name, index=False )
                 output_filename = f"{sheet_name}.csv"
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
-                st.write(f"{fg} - {len(OutputAC_DF)}")
                 FileList.append(output_filename)
 
     ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
