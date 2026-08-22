@@ -431,7 +431,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
 
     ACLeads = ACLeads.sort_values(by=["Status","CreatedAt"], ascending=[True, True])
 
-    if "techies checkout" in ACLeads["Payment Slug"].unique():
+    if "techies checkout" in ACLeads["PaymentFunnel"].unique():
         ACLeads = ACLeads[(~ACLeads.Amount.isin([114.46, 116.86]) )]
 
     ACLeads.to_excel(f"ACLeads_{WSDate}_Concat.xlsx", index=False)
