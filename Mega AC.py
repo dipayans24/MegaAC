@@ -130,7 +130,7 @@ def filter_student(ACOutput_FileName):
               NewACData[sheet].to_excel(f, sheet_name=sheet, index=False)
               FunnelCount.loc[len(FunnelCount), :]= [sheet, len(NewACData[sheet])]
     
-      return ACOutput_FileName
+      return ACOutput_FileName, FunnelCount
 
 def getFilesList(parent_folder_id, service):
     # Retrieves ALL files/folders within a parent folder (paginated, Shared-Drive aware)
