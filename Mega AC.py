@@ -576,7 +576,8 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             )
     #Unmatched_Slugs.to_excel(f, sheet_name="Unmatched_Slugs", index=False)
     
-        st.info(sheet_id)
+        #st.info(sheet_id)
+        st.link_button(f"Go to Sheet- {sheet_id}", f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit?usp=sharing")
 
     if "TotalFiles" in st.session_state:
         if "upload_done" not in st.session_state:
