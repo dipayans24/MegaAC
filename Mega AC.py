@@ -438,12 +438,13 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
             for fg in FunnelGrouping:
                 sheet_name = f"{fg}_AC"
                 OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
-                if sheet_name == "Python_AC":
-                    OutputAC_DF = OutputAC_DF[OutputAC_DF['Age Group'] != "Under 21"]
+                #if sheet_name == "Python_AC":
+                #   OutputAC_DF = OutputAC_DF[OutputAC_DF['Age Group'] != "Under 21"]
                
                 OutputAC_DF.to_excel(f, sheet_name= sheet_name, index=False )
                 output_filename = f"{sheet_name}.csv"
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
+                st.write(f"{fg} - {len(OutputAC_DF)}")
                 FileList.append(output_filename)
 
     ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
