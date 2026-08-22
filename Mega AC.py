@@ -129,6 +129,7 @@ def filter_student(ACOutput_FileName):
           for sheet in NewACData:
               NewACData[sheet].to_excel(f, sheet_name=sheet, index=False)
               FunnelCount.loc[len(FunnelCount), :]= [sheet, len(NewACData[sheet])]
+              st.write(f"{sheet} - {len(NewACData[sheet])}")
     
       return ACOutput_FileName, FunnelCount
 
