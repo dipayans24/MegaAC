@@ -24,6 +24,8 @@ warnings.filterwarnings('ignore')
 
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
+Python = [235, 942, 114]
+Excel = [117, 574]
 
 def generate_code(Funnel, WSDate):
 
@@ -185,6 +187,14 @@ def getSheet(sheet_id, sheet_name, credential_Upload):
   except:
       return None
 
+def PaymentFunnel(x):
+    if pd.notna(x):
+        if x in Python:
+            return "techies checkout"
+        elif x in Excel:
+            return "om checkout"
+    return pd.NA
+    
 #Pre-Processing Payment Report and getDates Functions
 def generatePaymentReport(filePath, paymentSlugs):
   paymentReport = pd.read_csv(filePath[0], sep=",", date_format="%Y-%m-%d %H:%M:%S", dayfirst=True,  low_memory=False)
