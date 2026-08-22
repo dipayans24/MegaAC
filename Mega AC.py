@@ -642,9 +642,9 @@ else:
     with st.status("Links", expanded=False):
         col1, col2 = st.columns(2, vertical_alignment = "center",  width="stretch") 
         with col1:
-            st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/")
+            st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/", width  = "stretch")
         with col2:
-            st.link_button("Open TemporalDB", "https://temporal.10xpay.in/")
+            st.link_button("Open TemporalDB", "https://temporal.10xpay.in/", width  = "stretch")
             
         st.code("FgbBpmOfK68FBt")
         
