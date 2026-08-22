@@ -251,6 +251,7 @@ def generatePaymentReport(filePath, paymentSlugs):
   #Formatting the column as date time
   paymentReport["CreatedAt"] = pd.to_datetime(paymentReport["CreatedAt"], format = "%Y-%m-%d %H:%M:%S", exact=True, dayfirst=True, yearfirst=False)
 
+  paymentReport.rename(columns = {"Profession (PG)": "Profession"}, inplace =True)
   st.write(f"After Basic Filtering- {len(paymentReport)}")
   paymentSlugs["PaymentFunnel"] = paymentSlugs["PaymentFunnel"].apply(lambda x: pd.NA if x  == '' else x)
   paymentSlugs.dropna(subset = ["PaymentFunnel"], inplace = True, how="any")
@@ -263,7 +264,7 @@ def generatePaymentReport(filePath, paymentSlugs):
 
   st.write(f"After Merging payment slugs - {len(mergedDf)}")
 
-  columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel"]
+  columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel", "Profession"]
 
   return mergedDf[columns]
 
