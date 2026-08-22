@@ -103,6 +103,35 @@ def getGdriveService(GdriveCredentials, delegated_user=None):
 
     return build('drive', 'v3', credentials=creds)
 
+def filter_student(ACOutput_FileName):
+      FunnelCount = pd.DataFrame(columns=["Funnel", "Count"])
+    
+      studentDF = pd.DataFrame()
+      NewACData = {}
+    
+      with pd.ExcelFile(ACOutput_FileName) as f:
+          Non_AI_AC_sheet_name = [sheet for sheet in  f.sheet_names if sheet != "AI_AC"]
+          AI_AC_sheet_name = [sheet for sheet in  f.sheet_names if sheet == "AI_AC"]
+            
+      for sheet in Non_AI_AC_sheet_name:
+        data = pd.read_excel(ACOutput_FileName, sheet_name=sheet)
+        DF = data[data["Profession"].fillna("Empty").str.lower().str.contains("student")]
+        data = data[~data["Profession"].fillna("Empty").str.lower().str.contains("student")]
+        NewACData[sheet] = data
+        studentDF = pd.concat([studentDF, DF], axis = "rows", ignore_index = True)
+    
+      AI_AC = pd.read_excel(ACOutput_FileName, sheet_name = AI_AC_sheet_name[0])
+      AI_AC = pd.concat([AI_AC, studentDF], axis = "rows", ignore_index = True)
+    
+      NewACData["AI_AC"] = AI_AC
+    
+      with pd.ExcelWriter(ACOutput_FileName) as f:
+          for sheet in NewACData:
+              NewACData[sheet].to_excel(f, sheet_name=sheet, index=False)
+              FunnelCount.loc[len(FunnelCount), :]= [sheet, len(NewACData[sheet])]
+    
+      return ACOutput_FileName
+
 def getFilesList(parent_folder_id, service):
     # Retrieves ALL files/folders within a parent folder (paginated, Shared-Drive aware)
     file_list = []
@@ -303,14 +332,20 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
         if "Payment Funnel" in data.columns:
             data["CreatedAt"] = data["CreatedAt"].astype('M8[s]')+pd.Timedelta(minutes=330)
         else:
+            for col in ["Initiated At", "Status"]:
+                if col in data.columns:
+                    data.drop(columns=col, inplace=True)
+
             data.rename(columns={"Customer Email": "Email", "Customer Phone":"Phone Number", "Total":"Amount", 
-                               "Product Slug" : "Payment Slug", "Initiated At":"CreatedAt"}, inplace=True)
+                               "Product Slug" : "Payment Slug", "Initiated At":"CreatedAt", "Payment Status": "Status", "Created At": "CreatedAt"}, inplace=True)
+
+            data = data.loc[(data["Amount"]  <= 950) & (data["Status"] != "PAID"), :]
             
-            data = data.loc[(data["Amount"]  <= 950) & (data["Status"] != "Created"), :]
             if "CreatedAt" not in data:
                 data["CreatedAt"] = None
     
-            data["CreatedAt"] = data["CreatedAt"].astype('M8[s]')
+            data["CreatedAt"] = data["CreatedAt"].astype('M8[s]')+pd.Timedelta(minutes=330)
+            
             data["roundOff"] = data.Amount.round(0)
             data["PaymentFunnel"] = data["roundOff"].astype(int).map(PaymentFunnel)
             
@@ -397,7 +432,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
 
     ACOutput_FileName = f"AC_Data_{WSDate}.xlsx"
 
-    FunnelCount = pd.DataFrame(columns=["Funnel", "Count"])
+    
     if len(ACLeads) > 0:
         with pd.ExcelWriter(ACOutput_FileName) as f:
             for fg in FunnelGrouping:
@@ -405,17 +440,13 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
                 OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
                 if sheet_name == "Python_AC":
                     OutputAC_DF = OutputAC_DF[OutputAC_DF['Age Group'] != "Under 21"]
-                FunnelCount.loc[len(FunnelCount), :]= [fg, len(OutputAC_DF)]
+               
                 OutputAC_DF.to_excel(f, sheet_name= sheet_name, index=False )
                 output_filename = f"{sheet_name}.csv"
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
                 FileList.append(output_filename)
 
-    # if len(MatchedLeads) > 0:
-    #     output_filename = f"ExcludedData_.csv"
-    #     ExcludedData.append(output_filename)
-    #     MatchedLeads = MatchedLeads.sort_values(by=["CreatedAt"], ascending=True)
-    #     MatchedLeads.to_csv(output_filename, index=False, sep=",")
+    ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
 
