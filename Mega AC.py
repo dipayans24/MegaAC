@@ -306,11 +306,12 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
             
         MetaACData = pd.concat([MetaACData, data], axis="rows")
 
-MetaACData["PaymentFunnel"] = MetaACData[["Payment Funnel", "PaymentFunnel"]].apply(lambda x: x["Payment Funnel"] if pd.isna(x["PaymentFunnel"]) else x["PaymentFunnel"], axis= 1)
-
-columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel", "Profession"]
-
-MetaACData = MetaACData[columns]
+    MetaACData["PaymentFunnel"] = MetaACData[["Payment Funnel", "PaymentFunnel"]].apply(lambda x: x["Payment Funnel"] if pd.isna(x["PaymentFunnel"]) else x["PaymentFunnel"], axis= 1)
+    
+    columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel", "Profession"]
+    
+    MetaACData = MetaACData[columns]
+    
     MetaACData = MetaACData.sort_values(by = ["CreatedAt"], ascending=True )
     MetaACData.rename(columns = {"Payment Funnel": "PaymentFunnel"}, inplace =True)
 
