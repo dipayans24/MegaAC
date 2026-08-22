@@ -49,6 +49,7 @@ def generate_code(Funnel, WSDate):
             '{checkout}' as "Payment Slug",
             `Wp Wc Orders - Order`.`status` AS `Status`, 
             '{checkout}' as  "Payment Funnel", 
+            NULL as 'Profession',
             'Yes' as "Abandon Cart"
         FROM
         `wp_wc_orders_meta`
