@@ -640,7 +640,12 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
 
 else:
     with st.status("Links", expanded=False):
-        st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.link_button("Open Metabase", "https://metabase-production-6ca8.up.railway.app/")
+        with col2:
+            st.link_button("Open TemporalDB", "https://temporal.10xpay.in/")
+            
         st.code("FgbBpmOfK68FBt")
         
     with st.status("Paste this code in Metabase", expanded=True):
