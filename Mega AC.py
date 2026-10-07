@@ -316,7 +316,7 @@ def CountIf(Main_File, Current_File, MFCol, CFCol, filename):
 
 #  Generate the MEGA Report
 
-def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime):
+def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime, MergeStudents):
     FileList = []
     ACData = generatePaymentReport(filePath, paymentSlugs )
     Funnels = ACData["PaymentFunnel"].unique()
@@ -449,8 +449,10 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
                 output_filename = f"{sheet_name}.csv"
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
                 FileList.append(output_filename)
-
-    #ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
+                
+    # Filters students from Excel and Python and adds it to AI 
+    if MergeStudents:
+        ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
 
@@ -508,7 +510,13 @@ GdriveCredentials =  st.file_uploader("Upload GDrive File", type = ["json"])
 
 MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_files=True, type = ["csv"])
 
-clearPreviousData = st.checkbox("Clear Data?")
+
+
+col_1, col_2 = st.columns(2, vertical_alignment = "center",  width="stretch") 
+with col_1:
+    clearPreviousData = st.checkbox("Clear Data?")
+with col_2:
+    MergeStudents = st.checkbox("Merge Students?",value = True help = "Merge Students from Excel/Python into AI)
 
 if WSDate and MetaACData and GdriveCredentials and credential_Upload:
     genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
@@ -589,7 +597,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             status.update(label="Completed!",expanded=False)
 
             ACOutput_FileName, FunnelCount = processMEGA(MetaACDataFilePaths,ValidationData, paymentSlugs,  filePath,  BatchDate , 
-                                                         WSDate, ACBatchStartTime, ACBatchEndTime)
+                                                         WSDate, ACBatchStartTime, ACBatchEndTime, MergeStudents)
 
         st.dataframe(MegaSheetInfo.loc[condition, ["Date", "sheet_id"]] , hide_index=True)
 
