@@ -516,7 +516,7 @@ col_1, col_2 = st.columns(2, vertical_alignment = "center",  width="stretch")
 with col_1:
     clearPreviousData = st.checkbox("Clear Data?")
 with col_2:
-    MergeStudents = st.checkbox("Merge Students?",value = True help = "Merge Students from Excel/Python into AI)
+    MergeStudents = st.checkbox("Merge Students?",value = True, help = "Merge Students from Excel/Python into AI)
 
 if WSDate and MetaACData and GdriveCredentials and credential_Upload:
     genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
