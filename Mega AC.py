@@ -450,7 +450,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
                 FileList.append(output_filename)
 
-    ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
+    #ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
 
