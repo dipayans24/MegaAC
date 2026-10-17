@@ -227,6 +227,8 @@ def PaymentFunnel(x):
             return "techies checkout"
         elif x in Excel:
             return "om checkout"
+        else:
+          return "ai checkout"
     return pd.NA
     
 #Pre-Processing Payment Report and getDates Functions
@@ -356,7 +358,10 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
             data["PaymentFunnel"] = data["roundOff"].astype(int).map(PaymentFunnel)
             
         MetaACData = pd.concat([MetaACData, data], axis="rows")
-
+    
+    if "Payment Funnel" not in MetaACData.columns:
+          MetaACData["Payment Funnel"] = pd.NA
+        
     MetaACData["PaymentFunnel"] = MetaACData[["Payment Funnel", "PaymentFunnel"]].apply(lambda x: x["Payment Funnel"] if pd.isna(x["PaymentFunnel"]) else x["PaymentFunnel"], axis= 1)
     
     columns = ["CreatedAt", "Customer Name", "Email", "Phone Number", "Amount", "Age Group", "Payment Slug", "Status", "PaymentFunnel", "Profession"]
