@@ -444,12 +444,12 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
     ACOutput_FileName = f"AC_Data_{WSDate}.xlsx"
 
     
-    if len(ACLeads) > 0:
-        with pd.ExcelWriter(ACOutput_FileName) as f:
-            for fg in FunnelGrouping:
-                sheet_name = f"{fg}_AC"
-                OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
-               
+    
+    with pd.ExcelWriter(ACOutput_FileName) as f:
+        for fg in FunnelGrouping:
+            sheet_name = f"{fg}_AC"
+            OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
+            if len(OutputAC_DF) > 0:
                 OutputAC_DF.to_excel(f, sheet_name= sheet_name, index=False )
                 output_filename = f"{sheet_name}.csv"
                 OutputAC_DF.to_csv(output_filename, index=False, sep=",")
