@@ -234,7 +234,11 @@ def PaymentFunnel(x):
     
 #Pre-Processing Payment Report and getDates Functions
 def generatePaymentReport(filePath, paymentSlugs):
-  paymentReport = pd.read_csv(filePath[0], sep=",", date_format="%Y-%m-%d %H:%M:%S", dayfirst=True,  low_memory=False)
+  if filePath[0].endswith(".csv"): # Check file extension
+    paymentReport = pd.read_csv(filePath[0], sep=",", date_format="%Y-%m-%d %H:%M:%S", dayfirst=True,  low_memory=False) # Read CSV with specific date formatting
+  
+  if filePath[0].endswith(".parquet"): # Check file extension
+    paymentReport = pd.read_parquet(filePath[0]) # Read Parquet  
 
   #Filter the rows
   paymentReport = paymentReport[(paymentReport["Tags"].fillna("empty").str.contains("l1") | paymentReport["Tags"].isna() )]
