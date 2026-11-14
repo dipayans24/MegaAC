@@ -543,9 +543,9 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
         MetaACDataFilePaths = [save_upload(file) for file in MetaACData]
 
         CurrentDate = datetime.strptime(WSDate , "%Y-%m-%d")
-        PreviousDate = CurrentDate - timedelta(days=8)
+        PreviousDate = CurrentDate - timedelta(days=9)
         ACBatchStartTime =  datetime.strptime(f"{str(PreviousDate.date())} 17:00:00", "%Y-%m-%d %H:%M:%S")
-        ACBatchEndTime = ACBatchStartTime + timedelta(days = 7)
+        ACBatchEndTime = ACBatchStartTime + timedelta(days = 8)
 
         credential_Upload = save_upload(credential_Upload)
         st.session_state["credential_Upload"] = credential_Upload
