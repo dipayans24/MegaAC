@@ -450,19 +450,34 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
 
     
     
-    with pd.ExcelWriter(ACOutput_FileName) as f:
+    OutputAC_DF = pd.DataFrame()
+    if len(ACLeads) > 0:
+      with pd.ExcelWriter(ACOutput_FileName) as f:
         for fg in FunnelGrouping:
-            sheet_name = f"{fg}_AC"
-            OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
-            if len(OutputAC_DF) > 0:
-                OutputAC_DF.to_excel(f, sheet_name= sheet_name, index=False )
-                output_filename = f"{sheet_name}.csv"
-                OutputAC_DF.to_csv(output_filename, index=False, sep=",")
-                FileList.append(output_filename)
+          #sheet_name = f"{fg}_AC"
+          # OutputAC_DF = ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]
+          # 
+    
+          # OutputAC_DF.to_csv(output_filename, index=False, sep=",")
+    
+          OutputAC_DF = pd.concat([OutputAC_DF, ACLeads.loc[ACLeads["PaymentFunnel"].isin(FunnelGrouping[fg]), :]], axis="rows", ignore_index=True)
+    
+        OutputAC_DF = OutputAC_DF.sort_values(by=["Status", "Amount"], ascending=[True, False] )
+        OutputAC_DF["EmailLC"] = OutputAC_DF["Email"].str.lower().str.strip()
+        OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["EmailLC"], keep="first" )
+        print(len(all))
+        OutputAC_DF["Phone Number"] = OutputAC_DF["Phone Number"].str.replace(r"\D+", "", regex = True).astype(int, errors = "ignore")
+        OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["Phone Number"], keep="first" )
+        OutputAC_DF.drop(columns=["EmailLC"], inplace=True)
+        print(len(all))
+        
+        OutputAC_DF.to_excel(f, sheet_name= "AI_AC", index=False )
+        output_filename = f"AI_AC.csv"
+        FileList.append(output_filename)
                 
     # Filters students from Excel and Python and adds it to AI 
-    if MergeStudents:
-        ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
+    #if MergeStudents:
+        #ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
 
@@ -514,22 +529,35 @@ def check_session_state(sheet_id  ,sessionVarName , sheet_name , credential_Uplo
 
 st.set_page_config("📊 MEGA Sheet - AC", layout="wide")
 st.header("📊 MEGA Sheet - AC", divider=True, text_alignment="center")
+col1, col2  = st.columns(2)
+
 WSDate =  str(st.date_input("Select the Next Sunday date",value=next_sunday()))
-credential_Upload = st.file_uploader("Upload Credentials File", type = ["json"]) 
-GdriveCredentials =  st.file_uploader("Upload GDrive File", type = ["json"]) 
+with col1:
+    credential_Upload = st.file_uploader("Upload Credentials File", type = ["json"]) 
+with col2:
+    GdriveCredentials =  st.file_uploader("Upload GDrive File", type = ["json"]) 
 
 MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_files=True, type = ["csv"])
 
 
 
-col_1, col_2 = st.columns(2, vertical_alignment = "center",  width="stretch") 
+col_1, col_2, col_3 = st.columns(3, vertical_alignment = "center",  width="stretch") 
 with col_1:
     clearPreviousData = st.checkbox("Clear Data?")
 with col_2:
     MergeStudents = st.checkbox("Merge Students?",value = True, help = "Merge Students from Excel/Python into AI")
+with col_3:  
+    UploadMEGASheet = st.checkbox("Manually Upload MEGA Sheet?")
 
+    
 if WSDate and MetaACData and GdriveCredentials and credential_Upload:
-    genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
+    if UploadMEGASheet:
+        ManualMEGAFilePath = st.file_uploader("Upload the MEGA Sheet", accept_multiple_files=True, type = ["xlsx"])
+        
+        genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
+
+    else:
+         genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
 
 # Example usage:
     if genbtn:
@@ -574,9 +602,13 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
 
             st.session_state["sheet_id"] = sheet_id
 
-            AttendeeFile = r"MegaSheet.xlsx"
-            url = f"https://drive.google.com/uc?id={sheet_id}"
-            gdown.download(url, AttendeeFile, quiet=True)
+            try:
+                AttendeeFile = r"MegaSheet.xlsx"
+                url = f"https://drive.google.com/uc?id={sheet_id}"
+                gdown.download(url, AttendeeFile, quiet=True)
+            except:
+                st.text("Download falied!!!. Processing manually uploaded file.")
+                AttendeeFile = save_upload(ManualMEGAFilePath)
 
             AdditionalSheetGrouping =  ["ExcludedDataAI Exotic_", "ExcludedDataPython_", "ExcludedDataAI_"]
             SheetGrouping = ['10xTechies', 'AI TV', 'AI', 'DRF', 'Excel', 'PU', 'Python', 'SMAI', 'AI Exotic', 'SMAI Exotic']+AdditionalSheetGrouping
