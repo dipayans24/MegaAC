@@ -552,7 +552,7 @@ with col_3:
     
 if WSDate and MetaACData and GdriveCredentials and credential_Upload:
     if UploadMEGASheet:
-        ManualMEGAFilePath = st.file_uploader("Upload the MEGA Sheet", accept_multiple_files=True, type = ["xlsx"])
+        ManualMEGAFilePath = st.file_uploader("Upload the MEGA Sheet", accept_multiple_files=False, type = ["xlsx"])
         
         genbtn = st.button("Generate Data", type="primary", on_click=None, use_container_width=True )
 
