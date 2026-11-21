@@ -465,11 +465,11 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
         OutputAC_DF = OutputAC_DF.sort_values(by=["Status", "Amount"], ascending=[True, False] )
         OutputAC_DF["EmailLC"] = OutputAC_DF["Email"].str.lower().str.strip()
         OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["EmailLC"], keep="first" )
-        print(len(all))
+        print(len(OutputAC_DF))
         OutputAC_DF["Phone Number"] = OutputAC_DF["Phone Number"].str.replace(r"\D+", "", regex = True).astype(int, errors = "ignore")
         OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["Phone Number"], keep="first" )
         OutputAC_DF.drop(columns=["EmailLC"], inplace=True)
-        print(len(all))
+        print(len(OutputAC_DF))
         
         OutputAC_DF.to_excel(f, sheet_name= "AI_AC", index=False )
         output_filename = f"AI_AC.csv"
