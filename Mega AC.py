@@ -323,7 +323,7 @@ def CountIf(Main_File, Current_File, MFCol, CFCol, filename):
 
 #  Generate the MEGA Report
 
-def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime, MergeStudents):
+def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime,  = False):
     FileList = []
     ACData = generatePaymentReport(filePath, paymentSlugs )
     Funnels = ACData["PaymentFunnel"].unique()
@@ -477,7 +477,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
 
         FunnelCount = pd.DataFrame(data = {"Funnel":[len(OutputAC_DF)]})
     # Filters students from Excel and Python and adds it to AI 
-    #if MergeStudents:
+    #if :
         #ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
@@ -542,12 +542,10 @@ MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_
 
 
 
-col_1, col_2, col_3 = st.columns(3, vertical_alignment = "center",  width="stretch") 
+col_1, col_2 = st.columns(3, vertical_alignment = "center",  width="stretch") 
 with col_1:
     clearPreviousData = st.checkbox("Clear Data?")
-with col_2:
-    MergeStudents = st.checkbox("Merge Students?",value = True, help = "Merge Students from Excel/Python into AI")
-with col_3:  
+with col_2:  
     UploadMEGASheet = st.checkbox("Manually Upload MEGA Sheet?")
 
     
@@ -608,8 +606,13 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
                 url = f"https://drive.google.com/uc?id={sheet_id}"
                 gdown.download(url, AttendeeFile, quiet=True)
             except:
-                st.text("Download falied!!!. Processing manually uploaded file.")
-                AttendeeFile = save_upload(ManualMEGAFilePath)
+                
+                if UploadMEGASheet:
+                    st.text("Download falied!!!. Processing manually uploaded file.")
+                    AttendeeFile = save_upload(ManualMEGAFilePath)
+                else:
+                    st.text("Try uploading the MEGA file manually")
+                    
 
             AdditionalSheetGrouping =  ["ExcludedDataAI Exotic_", "ExcludedDataPython_", "ExcludedDataAI_"]
             SheetGrouping = ['10xTechies', 'AI TV', 'AI', 'DRF', 'Excel', 'PU', 'Python', 'SMAI', 'AI Exotic', 'SMAI Exotic']+AdditionalSheetGrouping
@@ -640,7 +643,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             status.update(label="Completed!",expanded=False)
 
             ACOutput_FileName, FunnelCount = processMEGA(MetaACDataFilePaths,ValidationData, paymentSlugs,  filePath,  BatchDate , 
-                                                         WSDate, ACBatchStartTime, ACBatchEndTime, MergeStudents)
+                                                         WSDate, ACBatchStartTime, ACBatchEndTime )
 
         st.dataframe(MegaSheetInfo.loc[condition, ["Date", "sheet_id"]] , hide_index=True)
 
