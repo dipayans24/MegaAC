@@ -323,7 +323,7 @@ def CountIf(Main_File, Current_File, MFCol, CFCol, filename):
 
 #  Generate the MEGA Report
 
-def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime,  = False):
+def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, BatchDate , WSDate, ACBatchStartTime, ACBatchEndTime, MergeStudents  = False):
     FileList = []
     ACData = generatePaymentReport(filePath, paymentSlugs )
     Funnels = ACData["PaymentFunnel"].unique()
@@ -477,7 +477,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
 
         FunnelCount = pd.DataFrame(data = {"Funnel":[len(OutputAC_DF)]})
     # Filters students from Excel and Python and adds it to AI 
-    #if :
+    #if MergeStudents:
         #ACOutput_FileName, FunnelCount = filter_student(ACOutput_FileName)
 
     return ACOutput_FileName, FunnelCount
