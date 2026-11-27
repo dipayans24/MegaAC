@@ -607,7 +607,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
                 gdown.download(url, AttendeeFile, quiet=True)
             except:
                 
-                if UploadMEGASheet:
+                if UploadMEGASheet ==  True:
                     st.text("Download falied!!!. Processing manually uploaded file.")
                     AttendeeFile = save_upload(ManualMEGAFilePath)
                 else:
