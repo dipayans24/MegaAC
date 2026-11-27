@@ -542,7 +542,7 @@ MetaACData = st.file_uploader("Upload the files from Metabase", accept_multiple_
 
 
 
-col_1, col_2 = st.columns(3, vertical_alignment = "center",  width="stretch") 
+col_1, col_2 = st.columns(2, vertical_alignment = "center",  width="stretch") 
 with col_1:
     clearPreviousData = st.checkbox("Clear Data?")
 with col_2:  
