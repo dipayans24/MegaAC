@@ -466,7 +466,7 @@ def processMEGA( MetaACDataFilePaths, ValidationData, paymentSlugs,  filePath, B
         OutputAC_DF["EmailLC"] = OutputAC_DF["Email"].str.lower().str.strip()
         OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["EmailLC"], keep="first" )
         st.text(len(OutputAC_DF))
-        OutputAC_DF["Phone Number"] = OutputAC_DF["Phone Number"].str.replace(r"\D+", "", regex = True).astype(int, errors = "ignore")
+        OutputAC_DF["Phone Number"] = OutputAC_DF["Phone Number"].astype(str).str.replace(r"\D+", "", regex = True).astype(int, errors = "ignore")
         OutputAC_DF = OutputAC_DF.drop_duplicates(subset=["Phone Number"], keep="first" )
         OutputAC_DF.drop(columns=["EmailLC"], inplace=True)
         st.text(len(OutputAC_DF))
