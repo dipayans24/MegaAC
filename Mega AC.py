@@ -581,7 +581,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
 
         GdriveCredentials = save_upload(GdriveCredentials)
 
-        with st.status("Processing..", expanded=True) as status:
+        with st.status("Processing..", expanded=True) as sts:
             service = getGdriveService(GdriveCredentials)  # or getGdriveService(delegated_user="owner@yourdomain.com")
             filePath, service = getFilefromGdrive('0AHGO663tIOm5Uk9PVA', service, WSDate, clearPreviousData)
             
@@ -653,7 +653,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             else:
                 ValidationData = st.session_state["ValidationData"]
 
-            status.update(label="Completed!",expanded=False)
+            sts.update(label="Completed!",expanded=False)
 
             ACOutput_FileName, FunnelCount = processMEGA(MetaACDataFilePaths,ValidationData, paymentSlugs,  filePath,  BatchDate , 
                                                          WSDate, ACBatchStartTime, ACBatchEndTime )
