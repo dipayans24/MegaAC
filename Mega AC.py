@@ -653,7 +653,7 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
             else:
                 ValidationData = st.session_state["ValidationData"]
 
-            status.update(label="Completed!",expanded=False)
+            #status.update(label="Completed!",expanded=False)
 
             ACOutput_FileName, FunnelCount = processMEGA(MetaACDataFilePaths,ValidationData, paymentSlugs,  filePath,  BatchDate , 
                                                          WSDate, ACBatchStartTime, ACBatchEndTime )
