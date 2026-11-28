@@ -603,8 +603,21 @@ if WSDate and MetaACData and GdriveCredentials and credential_Upload:
 
             try:
                 AttendeeFile = r"MegaSheet.xlsx"
-                url = f"https://drive.google.com/uc?id={sheet_id}"
-                gdown.download(url, AttendeeFile, quiet=True)
+                #url = f"https://drive.google.com/uc?id={sheet_id}"
+                #gdown.download(url, AttendeeFile, quiet=True)
+                st.text("Downloading MegaSheet via Google Drive API...")
+                request = service.files().export_media(
+                    fileId=sheet_id,
+                    mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                
+                with open(AttendeeFile, 'wb') as f:
+                    downloader = MediaIoBaseDownload(f, request)
+                    done = False
+                    while not done:
+                        status, done = downloader.next_chunk()
+                st.text("Download complete.")
+                
             except:
                 
                 if UploadMEGASheet ==  True:
